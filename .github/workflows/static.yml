@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Weton & Kecocokan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+            max-width: 900px; /* Wider container */
+            width: 100%;
+            text-align: center;
+            border: 1px solid #e2e8f0; /* Subtle border */
+        }
+        h1 {
+            color: #1a202c; /* Darker heading color */
+            margin-bottom: 1.5rem;
+            font-weight: 700; /* Bold heading */
+            font-size: 2.25rem; /* Larger font size */
+        }
+        .input-group {
+            margin-bottom: 1.5rem; /* More space between groups */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Space between inputs */
+        }
+        .input-label {
+            font-weight: 600;
+            color: #2d3748; /* Slightly lighter than heading */
+            margin-bottom: 0.5rem;
+            font-size: 1.125rem; /* Larger label font */
+        }
+        input[type="number"] {
+            border: 1px solid #cbd5e0; /* Light gray border */
+            padding: 0.8rem 1rem; /* Increased padding */
+            border-radius: 0.75rem; /* More rounded input fields */
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease-in-out;
+            font-size: 1rem;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4299e1; /* Blue focus border */
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow on focus */
+        }
+        button {
+            background-color: #4299e1; /* Blue button */
+            color: white;
+            padding: 1rem 2rem; /* Generous padding */
+            border-radius: 0.75rem; /* Rounded button */
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem; /* Larger font size */
+            font-weight: 700;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3); /* Button shadow */
+        }
+        button:hover {
+            background-color: #3182ce; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 6px 15px rgba(66, 153, 225, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(66, 153, 225, 0.2);
+        }
+        .result-section {
+            text-align: left;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #e2e8f0; /* Dashed separator */
+        }
+        .result-section h2 {
+            color: #1a202c;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .result-section p {
+            margin-bottom: 0.75rem;
+            line-height: 1.7; /* Increased line height */
+            color: #4a5568; /* Slightly darker text for readability */
+        }
+        .result-card {
+            background-color: #f7fafc; /* Light gray card background */
+            padding: 1.25rem;
+            border-radius: 1rem; /* Rounded cards */
+            margin-bottom: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
+            border: 1px solid #ebf4f8; /* Very light border */
+        }
+        .result-card h3 {
+            font-weight: 600;
+            color: #2c5282; /* Darker blue for card titles */
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        .error-message {
+            color: #e53e3e; /* Red for error messages */
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 640px) {
+            .input-row {
+                display: flex;
+                gap: 1rem;
+            }
+            .input-row > div {
+                flex: 1;
+            }
+        }
+        @media (max-width: 639px) {
+            .container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.75rem;
+            }
+            button {
+                font-size: 1.125rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Weton & Kecocokan Pasangan</h1>
+
+        <div class="input-group">
+            <label class="input-label" for="male-dob">Tanggal Lahir Pria:</label>
+            <div class="input-row">
+                <div>
+                    <input type="number" id="male-day" placeholder="Tanggal (contoh: 1)" min="1" max="31">
+                </div>
+                <div>
+                    <input type="number" id="male-month" placeholder="Bulan (contoh: 1)" min="1" max="12">
+                </div>
+                <div>
+                    <input type="number" id="male-year" placeholder="Tahun (contoh: 1990)" min="1900" max="2099">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label" for="female-dob">Tanggal Lahir Wanita:</label>
+            <div class="input-row">
+                <div>
+                    <input type="number" id="female-day" placeholder="Tanggal (contoh: 1)" min="1" max="31">
+                </div>
+                <div>
+                    <input type="number" id="female-month" placeholder="Bulan (contoh: 1)" min="1" max="12">
+                </div>
+                <div>
+                    <input type="number" id="female-year" placeholder="Tahun (contoh: 1990)" min="1900" max="2099">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="calculateCompatibility()">Hitung Kecocokan</button>
+
+        <p id="error-message" class="error-message"></p>
+
+        <div id="results" class="result-section hidden">
+            <h2>Hasil Analisis Kecocokan</h2>
+
+            <div class="result-card">
+                <h3>Informasi Weton</h3>
+                <p><strong>Pria:</strong> <span id="male-weton"></span> (Neptu: <span id="male-neptu"></span>)</p>
+                <p><strong>Wanita:</strong> <span id="female-weton"></span> (Neptu: <span id="female-neptu"></span>)</p>
+                <p><strong>Jumlah Neptu Pasangan:</strong> <span id="total-neptu"></span></p>
+                <p><strong>Analisis Weton:</strong> <span id="weton-analysis"></span></p>
+            </div>
+
+            <div class="result-card">
+                <h3>Analisis Numerologi</h3>
+                <p><strong>Pria:</strong> <span id="male-numerology"></span></p>
+                <p><strong>Wanita:</strong> <span id="female-numerology"></span></p>
+                <p><strong>Analisis Numerologi Pasangan:</strong> <span id="numerology-analysis"></span></p>
+            </div>
+
+            <div class="result-card">
+                <h3>Analisis Feng Shui (Elemen Tahun Lahir)</h3>
+                <p><strong>Pria:</strong> <span id="male-fengshui"></span></p>
+                <p><strong>Wanita:</strong> <span id="female-fengshui"></span></p>
+                <p><strong>Analisis Feng Shui Pasangan:</strong> <span id="fengshui-analysis"></span></p>
+            </div>
+
+            <div class="result-card">
+                <h3>Potensi Kesuksesan Masing-masing</h3>
+                <p><strong>Pria:</strong> <span id="male-success"></span></p>
+                <p><strong>Wanita:</strong> <span id="female-success"></span></p>
+            </div>
+
+            <div class="result-card">
+                <h3>Review Kecocokan Keseluruhan</h3>
+                <p id="overall-review"></p>
+            </div>
+
+            <div class="result-card">
+                <h3>Saran untuk Pasangan</h3>
+                <p id="suggestions"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to hide a specific element
+        function hideElement(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Function to show a specific element
+        function showElement(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        // Main function to calculate compatibility
+        function calculateCompatibility() {
+            // Get input values for male's birth date
+            const maleDay = parseInt(document.getElementById('male-day').value);
+            const maleMonth = parseInt(document.getElementById('male-month').value);
+            const maleYear = parseInt(document.getElementById('male-year').value);
+
+            // Get input values for female's birth date
+            const femaleDay = parseInt(document.getElementById('female-day').value);
+            const femaleMonth = parseInt(document.getElementById('female-month').value);
+            const femaleYear = parseInt(document.getElementById('female-year').value);
+
+            // Get the error message element
+            const errorMessageElem = document.getElementById('error-message');
+            // Hide previous results
+            hideElement('results');
+            errorMessageElem.textContent = ''; // Clear previous error messages
+
+            // Validate inputs
+            if (isNaN(maleDay) || isNaN(maleMonth) || isNaN(maleYear) ||
+                isNaN(femaleDay) || isNaN(femaleMonth) || isNaN(femaleYear) ||
+                !isValidDate(maleDay, maleMonth, maleYear) || !isValidDate(femaleDay, femaleMonth, femaleYear)) {
+                errorMessageElem.textContent = 'Harap masukkan tanggal lahir yang valid untuk kedua pasangan.';
+                return;
+            }
+
+            // Calculate Weton for male
+            const maleWetonResult = calculateWeton(maleDay, maleMonth, maleYear);
+            document.getElementById('male-weton').textContent = maleWetonResult.weton;
+            document.getElementById('male-neptu').textContent = maleWetonResult.neptu;
+
+            // Calculate Weton for female
+            const femaleWetonResult = calculateWeton(femaleDay, femaleMonth, femaleYear);
+            document.getElementById('female-weton').textContent = femaleWetonResult.weton;
+            document.getElementById('female-neptu').textContent = femaleWetonResult.neptu;
+
+            // Calculate total Neptu
+            const totalNeptu = maleWetonResult.neptu + femaleWetonResult.neptu;
+            document.getElementById('total-neptu').textContent = totalNeptu;
+
+            // Analyze Weton compatibility
+            const wetonAnalysisText = analyzeWeton(totalNeptu);
+            document.getElementById('weton-analysis').textContent = wetonAnalysisText;
+
+            // Calculate Numerology for male and female
+            const maleNumerology = calculateNumerology(maleDay, maleMonth, maleYear);
+            const femaleNumerology = calculateNumerology(femaleDay, femaleMonth, femaleYear);
+            document.getElementById('male-numerology').textContent = maleNumerology;
+            document.getElementById('female-numerology').textContent = femaleNumerology;
+
+            // Analyze Numerology compatibility
+            const numerologyAnalysisText = analyzeNumerology(maleNumerology, femaleNumerology);
+            document.getElementById('numerology-analysis').textContent = numerologyAnalysisText;
+
+            // Calculate Feng Shui element for male and female
+            const maleFengShui = getFengShuiElement(maleYear);
+            const femaleFengShui = getFengShuiElement(femaleYear);
+            document.getElementById('male-fengshui').textContent = `${maleFengShui.element} (${maleFengShui.animal})`;
+            document.getElementById('female-fengshui').textContent = `${femaleFengShui.element} (${femaleFengShui.animal})`;
+
+            // Analyze Feng Shui compatibility
+            const fengshuiAnalysisText = analyzeFengShui(maleFengShui.element, femaleFengShui.element);
+            document.getElementById('fengshui-analysis').textContent = fengshuiAnalysisText;
+
+            // Determine individual success potential
+            const maleSuccessPotential = getSuccessPotential(maleWetonResult.neptu, maleNumerology);
+            const femaleSuccessPotential = getSuccessPotential(femaleWetonResult.neptu, femaleNumerology);
+            document.getElementById('male-success').textContent = maleSuccessPotential;
+            document.getElementById('female-success').textContent = femaleSuccessPotential;
+
+            // Provide overall review and suggestions
+            const overallReview = getOverallReview(maleWetonResult.neptu, femaleWetonResult.neptu, maleNumerology, femaleNumerology, maleFengShui.element, femaleFengShui.element);
+            const suggestions = getSuggestions(overallReview);
+            document.getElementById('overall-review').textContent = overallReview;
+            document.getElementById('suggestions').textContent = suggestions;
+
+            // Show results section
+            showElement('results');
+        }
+
+        // Helper function to validate a date
+        function isValidDate(day, month, year) {
+            const date = new Date(year, month - 1, day);
+            return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+        }
+
+        // Weton Calculation Logic (Simplified)
+        // This is a simplified calculation and may not perfectly align with all traditional Javanese calendar complexities.
+        function calculateWeton(day, month, year) {
+            const date = new Date(year, month - 1, day);
+            const dayOfWeek = date.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+            // Neptu Hari (Day value)
+            const neptuHari = {
+                0: { name: "Minggu", value: 5 }, // Sunday
+                1: { name: "Senin", value: 4 },  // Monday
+                2: { name: "Selasa", value: 3 }, // Tuesday
+                3: { name: "Rabu", value: 7 },   // Wednesday
+                4: { name: "Kamis", value: 8 },  // Thursday
+                5: { name: "Jumat", value: 6 },  // Friday
+                6: { name: "Sabtu", value: 9 }   // Saturday
+            };
+
+            // Neptu Pasaran (Market Day value) - Simplified cycle based on day of week for demonstration
+            const neptuPasaran = {
+                0: { name: "Kliwon", value: 8 },
+                1: { name: "Legi", value: 5 },
+                2: { name: "Pahing", value: 9 },
+                3: { name: "Pon", value: 7 },
+                4: { name: "Wage", value: 4 },
+                5: { name: "Kliwon", value: 8 }, // Cycle repeats
+                6: { name: "Legi", value: 5 }    // Cycle repeats
+            };
+
+            const hari = neptuHari[dayOfWeek];
+            const pasaran = neptuPasaran[dayOfWeek % 5]; // Use modulo 5 for Pasaran cycle
+
+            const weton = `${hari.name} ${pasaran.name}`;
+            const neptu = hari.value + pasaran.value;
+
+            return { weton, neptu };
+        }
+
+        // Weton Compatibility Analysis
+        function analyzeWeton(totalNeptu) {
+            if (totalNeptu >= 26) {
+                return "Sangat Baik: Pasangan ini memiliki keberuntungan besar dan hubungan yang harmonis.";
+            } else if (totalNeptu >= 21) {
+                return "Baik: Hubungan yang cukup stabil dengan potensi kebahagiaan.";
+            } else if (totalNeptu >= 16) {
+                return "Cukup: Mungkin ada tantangan, tetapi bisa diatasi dengan komunikasi.";
+            } else if (totalNeptu >= 11) {
+                return "Kurang Baik: Perlu usaha ekstra dan kesabaran untuk menjaga hubungan.";
+            } else {
+                return "Perlu Perhatian: Potensi konflik tinggi, butuh komitmen kuat dan pengertian mendalam.";
+            }
+        }
+
+        // Numerology Calculation (Sum of digits, reduced to single digit)
+        function calculateNumerology(day, month, year) {
+            let sum = day + month + year;
+            while (sum > 9) {
+                sum = sum.toString().split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+            }
+            return sum;
+        }
+
+        // Numerology Compatibility Analysis
+        function analyzeNumerology(num1, num2) {
+            if (num1 === num2) {
+                return `Kecocokan tinggi (Angka ${num1} dan ${num2}): Keduanya memiliki karakteristik dan tujuan yang mirip, sangat cocok.`;
+            } else if (
+                (num1 === 1 && (num2 === 3 || num2 === 5 || num2 === 7)) ||
+                (num1 === 2 && (num2 === 4 || num2 === 6 || num2 === 8)) ||
+                (num1 === 3 && (num2 === 1 || num2 === 6 || num2 === 9)) ||
+                (num1 === 4 && (num2 === 2 || num2 === 7 || num2 === 8)) ||
+                (num1 === 5 && (num2 === 1 || num2 === 7 || num2 === 8)) ||
+                (num1 === 6 && (num2 === 2 || num2 === 3 || num2 === 9)) ||
+                (num1 === 7 && (num2 === 1 || num2 === 4 || num2 === 5)) ||
+                (num1 === 8 && (num2 === 2 || num2 === 4 || num2 === 5)) ||
+                (num1 === 9 && (num2 === 3 || num2 === 6))
+            ) {
+                return `Kecocokan baik (Angka ${num1} dan ${num2}): Ada keseimbangan dan saling melengkapi, potensi hubungan yang harmonis.`;
+            } else {
+                return `Kecocokan sedang (Angka ${num1} dan ${num2}): Mungkin ada perbedaan yang perlu disikapi dengan pengertian dan kompromi.`;
+            }
+        }
+
+        // Simplified Feng Shui Element based on birth year
+        // This is a highly simplified interpretation for demonstration purposes.
+        function getFengShuiElement(year) {
+            const lastDigit = year % 10;
+            let element = '';
+            let animal = '';
+
+            // Simplified mapping for element
+            if (lastDigit === 0 || lastDigit === 1) element = 'Logam';
+            else if (lastDigit === 2 || lastDigit === 3) element = 'Air';
+            else if (lastDigit === 4 || lastDigit === 5) element = 'Kayu';
+            else if (lastDigit === 6 || lastDigit === 7) element = 'Api';
+            else if (lastDigit === 8 || lastDigit === 9) element = 'Tanah';
+
+            // Simplified mapping for animal (Chinese Zodiac - 12 year cycle)
+            const animals = ["Monyet", "Ayam", "Anjing", "Babi", "Tikus", "Sapi", "Macan", "Kelinci", "Naga", "Ular", "Kuda", "Kambing"];
+            animal = animals[(year - 4) % 12]; // Start cycle from year 4 for Rat
+
+            return { element, animal };
+        }
+
+        // Feng Shui Element Compatibility Analysis
+        function analyzeFengShui(element1, element2) {
+            // Productive cycle: Kayu -> Api -> Tanah -> Logam -> Air -> Kayu
+            // Destructive cycle: Kayu -> Tanah -> Air -> Api -> Logam -> Kayu
+            const productive = {
+                'Kayu': 'Api',
+                'Api': 'Tanah',
+                'Tanah': 'Logam',
+                'Logam': 'Air',
+                'Air': 'Kayu'
+            };
+            const destructive = {
+                'Kayu': 'Tanah',
+                'Tanah': 'Air',
+                'Air': 'Api',
+                'Api': 'Logam',
+                'Logam': 'Kayu'
+            };
+
+            if (element1 === element2) {
+                return `Elemen sama (${element1}): Ada pemahaman yang mendalam, tetapi mungkin kurang dinamika jika tidak ada elemen pelengkap lain.`;
+            } else if (productive[element1] === element2 || productive[element2] === element1) {
+                return `Elemen saling mendukung (${element1} & ${element2}): Hubungan ini cenderung harmonis dan saling menguatkan, energi positif mengalir.`;
+            } else if (destructive[element1] === element2 || destructive[element2] === element1) {
+                return `Elemen bertentangan (${element1} & ${element2}): Mungkin ada gesekan atau konflik, butuh usaha lebih untuk menjaga keseimbangan.`;
+            } else {
+                return `Elemen netral (${element1} & ${element2}): Kecocokan standar, tergantung faktor lain.`;
+            }
+        }
+
+        // Simplified Potential for Success
+        function getSuccessPotential(neptu, numerology) {
+            let potential = "Cukup baik";
+            if (neptu > 20 && numerology > 6) {
+                potential = "Sangat baik: Individu ini memiliki potensi besar untuk mencapai kesuksesan dan kemakmuran.";
+            } else if (neptu > 15 && numerology > 4) {
+                potential = "Baik: Dengan kerja keras dan fokus, kesuksesan dapat diraih.";
+            } else {
+                potential = "Perlu peningkatan: Mungkin ada tantangan, namun dengan strategi dan dukungan yang tepat, kesuksesan dapat dicapai.";
+            }
+            return potential;
+        }
+
+        // Overall Compatibility Review
+        function getOverallReview(maleNeptu, femaleNeptu, maleNumerology, femaleNumerology, maleFengShuiElement, femaleFengShuiElement) {
+            let score = 0;
+            let review = "";
+
+            // Score based on Weton
+            const totalNeptu = maleNeptu + femaleNeptu;
+            if (totalNeptu >= 26) score += 3;
+            else if (totalNeptu >= 21) score += 2;
+            else if (totalNeptu >= 16) score += 1;
+            else score -= 1;
+
+            // Score based on Numerology
+            if (maleNumerology === femaleNumerology) score += 2;
+            else if (analyzeNumerology(maleNumerology, femaleNumerology).includes('baik')) score += 1;
+            else score -= 0.5;
+
+            // Score based on Feng Shui
+            const productiveElements = {
+                'Kayu': 'Api', 'Api': 'Tanah', 'Tanah': 'Logam', 'Logam': 'Air', 'Air': 'Kayu'
+            };
+            const destructiveElements = {
+                'Kayu': 'Tanah', 'Tanah': 'Air', 'Air': 'Api', 'Api': 'Logam', 'Logam': 'Kayu'
+            };
+
+            if (maleFengShuiElement === femaleFengShuiElement) score += 1;
+            else if (productiveElements[maleFengShuiElement] === femaleFengShuiElement || productiveElements[femaleFengShuiElement] === maleFengShuiElement) score += 2;
+            else if (destructiveElements[maleFengShuiElement] === femaleFengShuiElement || destructiveElements[femaleFengShuiElement] === maleFengShuiElement) score -= 1;
+            else score += 0.5;
+
+            if (score >= 6) {
+                review = "Pasangan ini menunjukkan tingkat kecocokan yang sangat tinggi di berbagai aspek. Ada harmoni, pengertian, dan potensi besar untuk masa depan yang cerah bersama. Meskipun tidak ada hubungan yang sempurna, fondasi yang kuat ini akan sangat membantu mereka menghadapi setiap tantangan.";
+            } else if (score >= 3) {
+                review = "Pasangan ini memiliki kecocokan yang baik secara keseluruhan. Ada banyak elemen positif yang saling mendukung, namun mungkin ada beberapa area yang memerlukan penyesuaian atau kompromi. Dengan komunikasi yang efektif dan kemauan untuk saling mendukung, hubungan ini dapat berkembang dengan indah.";
+            } else if (score >= 0) {
+                review = "Kecocokan pasangan ini berada pada tingkat sedang. Mereka mungkin memiliki beberapa perbedaan mendasar yang memerlukan perhatian dan usaha lebih. Kunci keberhasilan terletak pada kemampuan mereka untuk menerima dan menghargai perbedaan, serta bekerja sama membangun jembatan di antara keduanya.";
+            } else {
+                review = "Kecocokan pasangan ini cenderung rendah. Ada indikasi potensi konflik atau tantangan signifikan yang mungkin muncul. Hubungan ini akan membutuhkan komitmen yang sangat kuat, kesabaran tak terbatas, dan upaya sadar untuk mengatasi rintangan. Disarankan untuk lebih memahami satu sama lain sebelum mengambil langkah serius.";
+            }
+            return review;
+        }
+
+        // Suggestions for the Couple
+        function getSuggestions(overallReview) {
+            let suggestions = "";
+            if (overallReview.includes("sangat tinggi")) {
+                suggestions = "Terus pupuk komunikasi yang terbuka, saling menghargai perbedaan, dan dukung impian masing-masing. Jaga keintiman dan luangkan waktu berkualitas bersama. Hubungan Anda memiliki potensi besar untuk menjadi inspirasi bagi orang lain.";
+            } else if (overallReview.includes("baik")) {
+                suggestions = "Fokus pada penguatan area-area yang positif dan berinvestasi dalam komunikasi yang jujur dan empati. Pelajari cara menghadapi konflik dengan konstruktif dan selalu cari solusi bersama. Saling memberi ruang untuk pertumbuhan pribadi juga sangat penting.";
+            } else if (overallReview.includes("sedang")) {
+                suggestions = "Identifikasi area-area perbedaan dan diskusikan secara terbuka dan tanpa menghakimi. Latih kesabaran dan empati. Pertimbangkan untuk mencari hobi atau aktivitas bersama yang dapat mempererat ikatan. Terus belajar tentang bahasa cinta masing-masing dan penuhi kebutuhan emosional pasangan.";
+            } else { // Low compatibility
+                suggestions = "Sangat penting untuk memiliki diskusi mendalam tentang ekspektasi, nilai-nilai, dan tujuan hidup. Pertimbangkan untuk mencari bimbingan dari profesional atau konselor hubungan untuk membantu Anda menavigasi perbedaan. Fokus pada pengembangan diri dan saling menghormati, bahkan jika ada ketidaksetujuan. Keputusan besar harus diambil dengan hati-hati dan penuh kesadaran.";
+            }
+            return suggestions;
+        }
+
+        // Initial setup to hide results on load
+        document.addEventListener('DOMContentLoaded', () => {
+            hideElement('results');
+        });
+    </script>
+</body>
+</html>
